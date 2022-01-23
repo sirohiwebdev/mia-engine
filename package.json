@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "debug=* NODE_PATH=./src ts-node-dev --respawn ./src/index.ts",
     "build": "rimraf dist && tsc",
+    "prestart": "npm run build",
     "start": "NODE_PATH=./dist node ./dist/index.js",
     "prepare": "husky install",
     "lint": "eslint --max-warnings 0 --ext .js,ts src",
