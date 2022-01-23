@@ -1,6 +1,9 @@
 {
   "name": "mia-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x"
+  },
   "author": {
     "name": "ONFRA TECHNOLOGIES",
     "email": "backend@onfratechnologies.com"
