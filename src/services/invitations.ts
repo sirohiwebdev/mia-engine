@@ -2,6 +2,7 @@ import path from 'path';
 
 import { IInvitationTemplateData, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
 import Jimp from 'jimp';
+import { v4 } from 'uuid';
 const rW = 399;
 
 const addPrintContent = async (
@@ -60,8 +61,6 @@ export const getContentDimensions = ({
 };
 export const imageGenerator = async (template: IInvitationTemplateData & { image: string }) => {
   const { width, height, contents, image } = template;
-  const imageName = image.slice(image.lastIndexOf('/'));
-  const imageOutPath = path.join(__dirname, '..', '..', 'uploads', 'invitations', imageName);
 
   const { w, h } = getImageDimensions(width, height);
 
@@ -74,6 +73,8 @@ export const imageGenerator = async (template: IInvitationTemplateData & { image
     await addPrintContent(jImage, c, { ...template });
   }
 
+  const imageName = `${v4()}.${jImage.getExtension()}`;
+  const imageOutPath = path.join(__dirname, '..', '..', 'uploads', 'invitations', imageName);
   await jImage.writeAsync(imageOutPath);
 
   return imageName;
