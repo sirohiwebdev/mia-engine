@@ -34,8 +34,9 @@ export const imageGenerator = async (template: IInvitationTemplateData & { image
   const { width, height, contents, image } = template;
 
   const { w, h } = getImageDimensions(width, height);
+  const imageInputPath = path.join(__dirname, '..', '..', 'uploads', 'templates', image);
 
-  const jImage = await Jimp.read(image);
+  const jImage = await Jimp.read(imageInputPath);
 
   const textContents = contents.filter((c) => c.type === 'text');
 
@@ -43,7 +44,7 @@ export const imageGenerator = async (template: IInvitationTemplateData & { image
     await addPrintContent(jImage, c, { ...template });
   }
 
-  await jImage.writeAsync('before.png');
+  // await jImage.writeAsync('before.png');
   await jImage.resize(w, h);
   await jImage.quality(100);
   const imageName = `${v4()}.${jImage.getExtension()}`;
@@ -90,4 +91,4 @@ const template = {
   image: 'https://i.ibb.co/GQykRBD/invitation1-incomplete.png',
 };
 
-imageGenerator(template).then(console.log).catch(console.error);
+// imageGenerator(template).then(console.log).catch(console.error);
