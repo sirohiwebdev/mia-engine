@@ -34,6 +34,7 @@ export const templateSchema: Joi.ObjectSchema<ITemplate> = Joi.object({
   event: Joi.string().required(),
   id: Joi.string(),
   thumbnail: Joi.string().required(),
+  image: Joi.string().required(),
   name: Joi.string().required(),
   width: Joi.number().required(),
   height: Joi.number().required(),

@@ -8,6 +8,7 @@ import { createJwtToken } from 'utils/createJwtToken';
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
+  console.log({ email, password });
   const userModel = new User(getDb());
 
   try {
@@ -16,6 +17,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const refresh_token = hashGenerator.generateForUser(email, 24);
     return res.status(200).json({ access_token, refresh_token });
   } catch (err) {
-    return res.status(400).send({ error: err });
+    console.error(err);
+    return next(err);
   }
 };

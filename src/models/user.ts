@@ -37,7 +37,7 @@ export default class User extends BaseModel<IUser> {
 
   login = async (email: string, password: string) => {
     const user = await this.dbCollection.findOne({ email: email });
-    if (!user) throw new Error(`Not found`);
+    if (!user) throw new Error(`User not found`);
     const isValidPassword = User.isMatchPassword(password, user.password);
     if (!isValidPassword) throw new Error(`Password does not match for email ${email}`);
     return user;
@@ -57,7 +57,7 @@ export default class User extends BaseModel<IUser> {
 
   changePassword = async (id: string, newPassword: string, oldPassword: string) => {
     const found = await this.dbCollection.findOne({ id: id });
-    if (!found) throw new Error(`Not found`);
+    if (!found) throw new Error(`User not found`);
     if (!User.isMatchPassword(oldPassword, found.password)) {
       throw new Error(`Old password ${oldPassword} does not match.`);
     }

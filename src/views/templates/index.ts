@@ -1,4 +1,7 @@
+import path from 'path';
+
 import { NextFunction, Response } from 'express';
+import Jimp from 'jimp';
 
 import { createTemplate, listTemplates } from 'controllers/templates';
 import { getDb } from 'database/connect';
@@ -45,9 +48,17 @@ export const saveTemplate = async (req: AuthenticatedRequest, res: Response, nex
     const thumbnail = req.files['thumbnail'][0];
     const image = req.files['image'][0];
 
-    console.dir({ thumbnail, image }, { depth: 20 });
+    const {
+      bitmap: { width: tWidth, height: tHeight },
+    } = await Jimp.read(path.join(__dirname, '../../..', thumbnail.path));
+    const {
+      bitmap: { width, height },
+    } = await Jimp.read(path.join(__dirname, '../../..', image.path));
 
-    return res.json({ success: true });
+    return res.json({
+      thumbnail: { ...thumbnail, width: tWidth, height: tHeight },
+      image: { ...image, width, height },
+    });
   } catch (err) {
     return next(err);
   }
