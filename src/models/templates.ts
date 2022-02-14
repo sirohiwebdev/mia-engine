@@ -2,10 +2,10 @@ import { IInvitationTemplateData, InvitationTemplateContent } from '@sirohiwebde
 import Joi from 'joi';
 import { Db } from 'mongodb';
 
-import BaseModel from './_base';
+import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
-export interface ITemplate extends IInvitationTemplateData {
+export interface ITemplate extends IInvitationTemplateData, RootObject {
   type: 'image' | 'video';
   thumbnail: string;
   event: string;

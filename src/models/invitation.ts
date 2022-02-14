@@ -1,10 +1,10 @@
 import Joi from 'joi';
 import { Db } from 'mongodb';
 
-import BaseModel from './_base';
+import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 import { ITemplate, templateContentSchema } from './templates';
-export interface IInvitation {
+export interface IInvitation extends RootObject {
   user: string;
   template: string;
   contents: ITemplate['contents'];

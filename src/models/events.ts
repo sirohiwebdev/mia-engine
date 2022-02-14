@@ -1,10 +1,10 @@
 import Joi from 'joi';
 import { Db } from 'mongodb';
 
-import BaseModel from './_base';
+import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
-export interface IEvent {
+export interface IEvent extends RootObject {
   name: string;
   description: string;
   images: string[];

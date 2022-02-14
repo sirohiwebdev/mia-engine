@@ -2,10 +2,10 @@ import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import { Db } from 'mongodb';
 
-import BaseModel from './_base';
+import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
-interface ISubscription {
+interface ISubscription extends RootObject {
   type: 'free' | 'paid';
   // Iso Timestamp
   validUpto: string;

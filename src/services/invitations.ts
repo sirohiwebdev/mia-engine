@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 
 import { staticUrl } from 'configs';
 import { ITemplate } from 'models';
+import { RootObject } from 'models/_base';
 
 import { uploadToStaticBucket } from './s3';
 
@@ -57,7 +58,7 @@ export const imageGenerator = async (template: ITemplate) => {
   return `invitations/${imageName}`;
 };
 
-const template: ITemplate = {
+const template: Omit<ITemplate, keyof RootObject> = {
   id: '0ff1489e-8473-4d9b-a684-58f043b02d7e',
   name: 'Birthday template',
   height: 503,

@@ -6,10 +6,10 @@ import { v4 } from 'uuid';
 
 import generateOtp, { OtpGeneratorOptions } from 'services/otp';
 
-import BaseModel from './_base';
+import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
-interface IToken {
+interface IToken extends RootObject {
   // Iso Timestamp
   validUpto: string;
   token: string;
