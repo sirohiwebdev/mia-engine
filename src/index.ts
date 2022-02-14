@@ -11,7 +11,7 @@ import morgan from 'morgan';
 
 import { initDB } from 'database/connect';
 
-import { errorHandler } from './middleware/errorHandler';
+import { errorHandler } from './middleware';
 import routes from './routes';
 export const app = express();
 app.use(cors());
@@ -21,14 +21,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-try {
-  const accessLogStream = fs.createWriteStream(path.join(__dirname, '../log/access.log'), {
-    flags: 'a',
-  });
-  app.use(morgan('combined', { stream: accessLogStream }));
-} catch (err) {
-  console.log(err);
-}
 app.use(morgan('combined'));
 
 app.use('/', routes);

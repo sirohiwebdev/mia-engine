@@ -5,7 +5,7 @@ import Jimp from 'jimp';
 
 import { createTemplate, listTemplates } from 'controllers/templates';
 import { getDb } from 'database/connect';
-import Template from 'models/templates';
+import Template, { ITemplate } from 'models/templates';
 import { AuthenticatedRequest } from 'types/JwtPayload';
 
 export const list = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -21,10 +21,23 @@ export const list = async (req: AuthenticatedRequest, res: Response, next: NextF
 };
 
 export const create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const { body } = req;
+  const { template } = req.body;
+
+  const thumbnail = req.files['thumbnail'][0] as Express.MulterS3.File;
+  const image = req.files['image'][0] as Express.MulterS3.File;
+
+  const temp = JSON.parse(template);
+
+  console.log(thumbnail, image);
+
+  const templateData: ITemplate = {
+    ...temp,
+    thumbnail: thumbnail.key,
+    image: image.key,
+  };
 
   try {
-    const insert = await createTemplate(body);
+    const insert = await createTemplate(templateData);
     return res.status(201).json({ _id: insert });
   } catch (err) {
     return next(err);
