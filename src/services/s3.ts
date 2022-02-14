@@ -20,10 +20,12 @@ const uploadToS3 = async (target: { Bucket: string; Key: string; Body: Options['
 
     return true;
   } catch (e) {
+    console.log('Error during s3 upload');
     console.error(e);
     return false;
   }
 };
 
-export const uploadToStaticBucket = (Key: string, Body: Options['params']['Body']) =>
-  uploadToS3({ Bucket: S3_STORAGE_BUCKET, Key, Body });
+export const uploadToStaticBucket = async (Key: string, Body: Options['params']['Body']) => {
+  return await uploadToS3({ Bucket: S3_STORAGE_BUCKET, Key, Body });
+};

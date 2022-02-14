@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-
 import { getImageDimensions, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
 import Jimp from 'jimp';
 import { v4 } from 'uuid';
@@ -51,12 +48,11 @@ export const imageGenerator = async (template: ITemplate) => {
   jImage.resize(w, h);
   jImage.quality(100);
   const imageName = `${v4()}.${jImage.getExtension()}`;
-  const imageOutPath = path.join(__dirname, '..', '..', 'uploads', 'invitations', imageName);
-  await jImage.writeAsync(imageOutPath);
+  // const imageOutPath = path.join(__dirname, '..', '..', 'uploads', 'invitations', imageName);
+  // await jImage.writeAsync(imageOutPath);
+  const imageBuffer = await jImage.getBufferAsync(Jimp.MIME_PNG);
 
-  const stream = fs.createReadStream(imageOutPath);
-
-  await uploadToStaticBucket(`invitations/${imageName}`, stream);
+  await uploadToStaticBucket(`invitations/${imageName}`, imageBuffer);
 
   return `invitations/${imageName}`;
 };
@@ -108,4 +104,4 @@ const template: ITemplate = {
   thumbnail: 'templates/thumbnail-BABY-SHOWER-SAMP-2-COMPLETED-dbec56bd-346c-4449-825c-820b3d93d013.png',
 };
 
-imageGenerator(template).then(console.log).catch(console.error);
+// imageGenerator(template).then(console.log).catch(console.error);
