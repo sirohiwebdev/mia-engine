@@ -8,7 +8,9 @@ import Collections from './_collections';
 export interface ITemplate extends IInvitationTemplateData {
   type: 'image' | 'video';
   thumbnail: string;
-  event: 'string';
+  event: string;
+  image?: string;
+  video?: string;
 }
 
 export const templateContentSchema: Joi.ObjectSchema<InvitationTemplateContent> = Joi.object({

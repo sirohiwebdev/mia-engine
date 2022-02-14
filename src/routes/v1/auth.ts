@@ -2,8 +2,6 @@ import { Router } from 'express';
 import { body, query } from 'express-validator';
 
 import { login, register, sendOtp, resetPassword, getAccessToken } from 'controllers/auth';
-import { profile } from 'controllers/users/profile';
-import { checkJwt } from 'middleware/checkJwt';
 import requestValidator from 'middleware/validator';
 
 const router = Router();

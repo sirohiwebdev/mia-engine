@@ -1,20 +1,21 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
 
 import upload from 'middleware/uploader';
-import requestValidator from 'middleware/validator';
 import { create, list, get, saveTemplate } from 'views/templates';
+
+import { checkRole, checkJwt } from './../../middleware';
 
 const router = Router();
 
 router.get('/', [], list);
 router.post(
   '/',
-  [
-    body(['thumbnail', 'type', 'name', 'id', 'layout', 'width', 'height', 'contents']).exists(),
-    body(['contents']).isArray(),
-    requestValidator,
-  ],
+  checkJwt,
+  checkRole(['ADMIN']),
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'image', maxCount: 1 },
+  ]),
   create,
 );
 

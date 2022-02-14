@@ -5,7 +5,7 @@ import { Db } from 'mongodb';
 import BaseModel from './_base';
 import Collections from './_collections';
 
-type UserRole = 'ADMIN' | 'USER';
+export type UserRole = 'ADMIN' | 'USER';
 
 interface IUser {
   name: string;
@@ -35,8 +35,8 @@ export default class User extends BaseModel<IUser> {
     return bcrypt.compareSync(plainPassword, hashPassword);
   }
 
-  login = async (email: string, password: string) => {
-    const user = await this.dbCollection.findOne({ email: email });
+  login = async (email: string, password: string, role: UserRole) => {
+    const user = await this.dbCollection.findOne({ email: email, role });
     if (!user) throw new Error(`User not found`);
     const isValidPassword = User.isMatchPassword(password, user.password);
     if (!isValidPassword) throw new Error(`Password does not match for email ${email}`);
