@@ -2,12 +2,12 @@ import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import { Db } from 'mongodb';
 
-import BaseModel from './_base';
+import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
 export type UserRole = 'ADMIN' | 'USER';
 
-interface IUser {
+interface IUser extends RootObject {
   name: string;
   email: string;
   password: string;
@@ -43,7 +43,7 @@ export default class User extends BaseModel<IUser> {
     return user;
   };
 
-  register = async (user: IUser) => {
+  register = async (user: Pick<IUser, 'email' | 'password' | 'name' | 'role'>) => {
     const found = await this.dbCollection.findOne({ email: user.email });
 
     if (found) {
