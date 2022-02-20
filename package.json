@@ -13,7 +13,7 @@
   "description": "RESTful API for MIA Backend, powered by TypeScript Express and TypeORM",
   "scripts": {
     "dev": "DOTENV_CONFIG_PATH=.env.local debug=* NODE_PATH=./src ts-node-dev --respawn ./src/index.ts",
-    "invitations": "DOTENV_CONFIG_PATH=.env.local debug=* NODE_PATH=./src ts-node src/services/invitations.ts",
+    "invitations": "DOTENV_CONFIG_PATH=.env debug=* NODE_PATH=./src ts-node -r dotenv/config src/services/invitations.ts",
     "build": "rimraf dist && tsc",
     "prestart": "npm run build",
     "start": "NODE_PATH=./dist node ./dist/index.js",

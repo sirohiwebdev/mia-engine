@@ -8,6 +8,21 @@ import { RootObject } from 'models/_base';
 
 import { uploadToStaticBucket } from './s3';
 
+const fontSizeMap = {
+  8: Jimp.FONT_SANS_8_BLACK,
+  10: Jimp.FONT_SANS_10_BLACK,
+  12: Jimp.FONT_SANS_12_BLACK,
+  14: Jimp.FONT_SANS_14_BLACK,
+  16: Jimp.FONT_SANS_16_BLACK,
+  32: Jimp.FONT_SANS_32_BLACK,
+  64: Jimp.FONT_SANS_64_BLACK,
+  128: Jimp.FONT_SANS_128_BLACK,
+};
+
+const getFont = (size: number) => {
+  return fontSizeMap[size] || Jimp.FONT_SANS_12_BLACK;
+};
+
 const addPrintContent = async (
   image: Jimp,
   content: InvitationTemplateContent,
@@ -16,7 +31,7 @@ const addPrintContent = async (
   const { source, properties, x, y } = content;
   // const { x, y } = getContentDimensions({ template, content });
 
-  const font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
+  const font = await Jimp.loadFont(getFont(properties.fontSize));
   const width = Jimp.measureText(font, source);
   const height = Jimp.measureTextHeight(font, source, template.width);
 
@@ -28,7 +43,7 @@ const addPrintContent = async (
     await textImage.color([{ apply: 'xor', params: [properties.color] }]);
   }
 
-  await textImage.writeAsync('text.png');
+  // await textImage.writeAsync('text.png');
   await image.blit(textImage, x, y);
 };
 
@@ -49,11 +64,11 @@ export const imageGenerator = async (template: ITemplate) => {
   jImage.resize(w, h);
   jImage.quality(100);
   const imageName = `${v4()}.${jImage.getExtension()}`;
-  // const imageOutPath = path.join(__dirname, '..', '..', 'uploads', 'invitations', imageName);
-  // await jImage.writeAsync(imageOutPath);
   const imageBuffer = await jImage.getBufferAsync(Jimp.MIME_PNG);
 
   await uploadToStaticBucket(`invitations/${imageName}`, imageBuffer);
+
+  // await jImage.writeAsync(imageName);
 
   return `invitations/${imageName}`;
 };
@@ -71,7 +86,9 @@ const template: Omit<ITemplate, keyof RootObject> = {
       source: 'Hello there My Friends, This should fill the entire width ot the image and should also be cropped.',
       x: 13,
       y: 410,
-      properties: {},
+      properties: {
+        color: 'pink',
+      },
       type: 'text',
       w: 100,
       h: 20,
@@ -82,7 +99,10 @@ const template: Omit<ITemplate, keyof RootObject> = {
       source: '19th Frb, 2022',
       x: 14,
       y: 437,
-      properties: {},
+      properties: {
+        color: 'green',
+        fontSize: 32,
+      },
       type: 'text',
       w: 100,
       h: 20,
@@ -93,16 +113,19 @@ const template: Omit<ITemplate, keyof RootObject> = {
       source: 'Blossom Cafe',
       x: 16,
       y: 463,
-      properties: {},
+      properties: {
+        color: 'blue',
+      },
       type: 'text',
       w: 100,
       h: 20,
     },
   ],
-  image: 'templates/image-BABY-SHOWER-SAMP-2-INCOMPLETED-ebb67a26-bd51-4e27-b498-e74d78ff0202.png',
+  image: 'templates/image-BABY-SHOWER-SAMPLE-5-INCOMPLETED-8fc55661-9abd-4998-9a9b-666c0cceb42b.png',
   type: 'image',
   event: 'birthday',
   thumbnail: 'templates/thumbnail-BABY-SHOWER-SAMP-2-COMPLETED-dbec56bd-346c-4449-825c-820b3d93d013.png',
 };
 
+// @ts-ignore
 // imageGenerator(template).then(console.log).catch(console.error);
