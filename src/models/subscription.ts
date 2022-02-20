@@ -1,23 +1,18 @@
-import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import { Db } from 'mongodb';
 
 import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
-interface ISubscription extends RootObject {
-  type: 'free' | 'paid';
-  // Iso Timestamp
-  validUpto: string;
+export interface ISubscription extends RootObject {
   subscriptionDate: string;
-  amount: number;
-  user: string; // User Id
+  plan: string;
+  user: string;
 }
-export const subscriptionSchema = Joi.object<ISubscription>({
-  type: Joi.string().valid('free', 'paid').required(),
-  validUpto: Joi.string().required().isoDate(),
+
+export const subscriptionSchema: Joi.Schema<ISubscription> = Joi.object<ISubscription>({
+  plan: Joi.string().required(),
   subscriptionDate: Joi.string().required().isoDate(),
-  amount: Joi.number().required(),
   user: Joi.string().required(),
 });
 

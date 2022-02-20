@@ -5,6 +5,8 @@ enum Collections {
   events = 'events',
   subscriptions = 'subscriptions',
   tokens = 'tokens',
+  payments = 'payments',
+  plans = 'plans',
 }
 
 export default Collections;
