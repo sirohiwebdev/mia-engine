@@ -19,7 +19,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction): void 
     if (err instanceof TokenExpiredError) {
       return res.status(401).json({ code: 902, message: err.message });
     }
-    return res.status(500).send(err.message);
+    return res.status(500).json({ message: err.message });
   }
   next();
 };
