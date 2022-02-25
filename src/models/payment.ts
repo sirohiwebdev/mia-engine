@@ -13,15 +13,17 @@ export enum PaymentStatus {
 export interface IPayment extends RootObject {
   user: string;
   amount: number;
-  subscription: string;
+  plan: string;
   status: PaymentStatus;
+  razorpayId: string | null;
 }
 
 export const paymentSchema: Joi.Schema<IPayment> = Joi.object<IPayment>({
   amount: Joi.number().required().min(0),
   user: Joi.string().required(),
-  subscription: Joi.string().required(),
+  plan: Joi.string().required(),
   status: Joi.string().valid(...Object.values(PaymentStatus)),
+  razorpayId: Joi.string().default(null),
 }).required();
 
 export default class Payment extends BaseModel<IPayment> {

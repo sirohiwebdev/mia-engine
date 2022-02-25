@@ -1,12 +1,31 @@
 import { getDb } from 'database/connect';
-import { PaymentModel } from 'models';
-import { IPayment } from 'models';
+import { PaymentModel, PlanModel } from 'models';
+import { gateway } from 'services/razorpay';
 
-const createPayment = async (props: IPayment) => {
-  const db = getDb();
-  const invitationModel = new PaymentModel(db);
+import { PaymentStatus } from '../../models/payment';
 
-  return await invitationModel.insert(props);
+export const makePaymentForSubscription = async ({ user, plan }: { user: string; plan: string }) => {
+  // first is create a raw payment
+
+  const paymentModel = new PaymentModel(getDb());
+  const planModel = new PlanModel(getDb());
+  const selectedPlan = await planModel.get(plan);
+
+  const newPayment = await paymentModel.insert({
+    user,
+    plan,
+    amount: selectedPlan.amount,
+    status: PaymentStatus.PENDING,
+  });
+
+  /// now create an order for this payment
+  const paymentOrder = await gateway.createOrder({ amount: selectedPlan.amount, plan, user, paymentId: newPayment });
+
+  // add razorpayId to payment
+  await paymentModel.update(newPayment, { razorpayId: paymentOrder.id });
+
+  return {
+    ...paymentOrder,
+    key: process.env.RAZORPAY_KEY_ID,
+  };
 };
-
-export default createPayment;
