@@ -47,6 +47,17 @@ const addPrintContent = async (
   await image.blit(textImage, x, y);
 };
 
+const addImageContent = async (image: Jimp, contents: InvitationTemplateContent[]) => {
+  for (const content of contents) {
+    const { source, x, y, w, h } = content;
+    if (source) {
+      const imageUpper = await Jimp.read(`${staticUrl}/${source}`);
+      await imageUpper.resize(w, h);
+      await image.blit(imageUpper, x, y);
+    }
+  }
+};
+
 export const imageGenerator = async (template: ITemplate) => {
   const { width, height, contents, image } = template;
 
@@ -56,6 +67,9 @@ export const imageGenerator = async (template: ITemplate) => {
   const jImage = await Jimp.read(imageInputPath);
 
   const textContents = contents.filter((c) => c.type === 'text');
+  const imageContents = contents.filter((c) => c.type === 'image');
+
+  await addImageContent(jImage, imageContents);
 
   for (const c of textContents) {
     await addPrintContent(jImage, c, { ...template });

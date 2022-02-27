@@ -7,13 +7,15 @@ import { AuthenticatedRequest } from 'types/JwtPayload';
 export const profile = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const { _id } = req.user;
 
+  console.log('Id', _id);
+
   const userModel = new UserModel(getDb());
   const subscriptionModel = new SubscriptionModel(getDb());
   const planModel = new PlanModel(getDb());
 
   try {
     const user = await userModel.get(_id);
-    const subscription = await subscriptionModel.find({ user: _id });
+    const subscription = await subscriptionModel.find({ user: _id, active: true });
 
     let userSubscription = null;
     if (subscription.length) {

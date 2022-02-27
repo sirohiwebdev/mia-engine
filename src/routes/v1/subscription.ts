@@ -1,8 +1,7 @@
 import { Router, NextFunction, Response } from 'express';
 import { body } from 'express-validator';
 
-import { makePaymentForSubscription } from 'controllers/payment';
-import { createSubscription, get } from 'controllers/subscription';
+import { createSubscription, get, buySubscription } from 'controllers/subscription';
 import requestValidator from 'middleware/validator';
 import { AuthenticatedRequest } from 'types/JwtPayload';
 
@@ -30,7 +29,7 @@ router.post(
   [body(['plan']).exists(), requestValidator],
   async (req: AuthenticatedRequest, res: Response, next) => {
     const { user, body } = req;
-    const paymentData = await makePaymentForSubscription({ user: user._id, plan: body.plan });
+    const paymentData = await buySubscription({ user: user._id, plan: body.plan });
 
     return res.json(paymentData);
   },

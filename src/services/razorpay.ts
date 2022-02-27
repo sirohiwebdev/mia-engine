@@ -3,9 +3,29 @@ import { createHmac } from 'crypto';
 import { round, isEqual } from 'lodash';
 import Razorpay from 'razorpay';
 
+import { PaymentState } from 'models';
+
 // TODO remove secret from here
 const secret = 'iTesaK@NVmbbU9n';
 
+export interface OrderEntity {
+  id: string;
+  entity: 'order';
+  amount: number;
+  amount_paid: number;
+  amount_due: number;
+  currency: string;
+
+  /**
+   * Corresponds to _id in the payments table
+   */
+  receipt: string;
+  offer_id: string | null;
+  status: 'paid' | 'created';
+  attempts: number;
+  notes: any;
+  created_at: number;
+}
 export interface PaymentEntity {
   id: string;
   entity: 'payment';
@@ -32,14 +52,6 @@ export interface PaymentEntity {
   error_code: string | null;
   error_description: string | null;
   created_at: number;
-}
-
-export enum PaymentState {
-  CREATED = 'created',
-  AUTHORIZED = 'authorized',
-  CAPTURED = 'captured',
-  REFUNDED = 'refunded',
-  FAILED = 'failed',
 }
 
 export const GatewayEvents = {
@@ -83,20 +95,7 @@ class PaymentGateway {
     plan: string;
     user: string;
     paymentId: string;
-  }): Promise<{
-    id: string;
-    entity: string;
-    amount: number;
-    amount_paid: number;
-    amount_due: number;
-    currency: string;
-    receipt: string;
-    offer_id: any;
-    status: PaymentState;
-    attempts: number;
-    notes: any;
-    created_at: number;
-  }> => {
+  }): Promise<OrderEntity> => {
     const order = this.razorpay.orders.create({
       amount: round(amount * 100, 2),
       currency: 'INR', // Keeping INR for now

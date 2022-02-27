@@ -2,9 +2,17 @@ import { getDb } from 'database/connect';
 import { PaymentModel, PlanModel } from 'models';
 import { gateway } from 'services/razorpay';
 
-import { PaymentStatus } from '../../models/payment';
+import { PaymentState } from '../../models/payment';
 
-export const makePaymentForSubscription = async ({ user, plan }: { user: string; plan: string }) => {
+export const makePaymentForSubscription = async ({
+  user,
+  subscription,
+  plan,
+}: {
+  user: string;
+  subscription: string;
+  plan: string;
+}) => {
   // first is create a raw payment
 
   const paymentModel = new PaymentModel(getDb());
@@ -13,9 +21,10 @@ export const makePaymentForSubscription = async ({ user, plan }: { user: string;
 
   const newPayment = await paymentModel.insert({
     user,
+    subscription,
     plan,
     amount: selectedPlan.amount,
-    status: PaymentStatus.PENDING,
+    status: PaymentState.CREATED,
   });
 
   /// now create an order for this payment
@@ -26,6 +35,7 @@ export const makePaymentForSubscription = async ({ user, plan }: { user: string;
 
   return {
     ...paymentOrder,
+    subscription,
     key: process.env.RAZORPAY_KEY_ID,
   };
 };
