@@ -1,4 +1,4 @@
-import { getImageDimensions, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
+import { getContentDimensions, getImageDimensions, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
 import Jimp from 'jimp';
 import { v4 } from 'uuid';
 
@@ -6,6 +6,7 @@ import { staticUrl } from 'configs';
 import { ITemplate } from 'models';
 import { RootObject } from 'models/_base';
 
+import { getImageFromText } from './font';
 import { uploadToStaticBucket } from './s3';
 
 const fontSizeMap = {
@@ -28,20 +29,24 @@ const addPrintContent = async (
   content: InvitationTemplateContent,
   template: { width: number; height: number },
 ) => {
-  const { source, properties, x, y } = content;
+  const { source = '', properties, x, y } = content;
   // const { x, y } = getContentDimensions({ template, content });
 
-  const font = await Jimp.loadFont(getFont(properties.fontSize));
-  const width = Jimp.measureText(font, source);
-  const height = Jimp.measureTextHeight(font, source, template.width);
+  // const font = await Jimp.loadFont(getFont(properties.fontSize));
+  // const width = Jimp.measureText(font, source);
+  // const height = Jimp.measureTextHeight(font, source, template.width);
 
-  const textImage = new Jimp(width, height);
-  await textImage.print(font, 0, 0, source);
+  const textImageUri = await getImageFromText(content);
 
-  if (properties && properties.color) {
-    console.log('Applying color', properties.color, Jimp.cssColorToHex(properties.color));
-    await textImage.color([{ apply: 'xor', params: [properties.color] }]);
-  }
+  const buffer = Buffer.from(textImageUri.replace('data:image/png;base64,', ''), 'base64');
+
+  const textImage = await Jimp.read(buffer);
+  // await textImage.print(font, 0, 0, source);
+
+  // if (properties && properties.color) {
+  //   console.log('Applying color', properties.color, Jimp.cssColorToHex(properties.color));
+  //   await textImage.color([{ apply: 'xor', params: [properties.color] }]);
+  // }
 
   // await textImage.writeAsync('text.png');
   await image.blit(textImage, x, y);
@@ -80,9 +85,9 @@ export const imageGenerator = async (template: ITemplate) => {
   const imageName = `${v4()}.${jImage.getExtension()}`;
   const imageBuffer = await jImage.getBufferAsync(Jimp.MIME_PNG);
 
-  await uploadToStaticBucket(`invitations/${imageName}`, imageBuffer);
+  // await uploadToStaticBucket(`invitations/${imageName}`, imageBuffer);
 
-  // await jImage.writeAsync(imageName);
+  await jImage.writeAsync(imageName);
 
   return `invitations/${imageName}`;
 };
@@ -97,28 +102,28 @@ const template: Omit<ITemplate, keyof RootObject> = {
     {
       id: 'a648bb11-bf3c-4e79-8530-a4254f9ef1ff',
       label: 'Message',
-      source: 'Hello there My Friends, This should fill the entire width ot the image and should also be cropped.',
+      source: 'Hello there My Friends',
       x: 13,
       y: 410,
       properties: {
-        color: 'pink',
+        color: 'black',
       },
       type: 'text',
-      w: 100,
+      w: 200,
       h: 20,
     },
     {
       id: '95b13cd8-003f-4106-b1a2-48e7cc52dcee',
       label: 'Timing',
-      source: '19th Frb, 2022',
+      source: '19th Feb, 2022',
       x: 14,
       y: 437,
       properties: {
         color: 'green',
-        fontSize: 32,
+        fontSize: 14,
       },
       type: 'text',
-      w: 100,
+      w: 200,
       h: 20,
     },
     {
@@ -142,4 +147,4 @@ const template: Omit<ITemplate, keyof RootObject> = {
 };
 
 // @ts-ignore
-// imageGenerator(template).then(console.log).catch(console.error);
+imageGenerator(template).then(console.log).catch(console.error);
