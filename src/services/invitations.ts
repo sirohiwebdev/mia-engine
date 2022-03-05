@@ -85,9 +85,9 @@ export const imageGenerator = async (template: ITemplate) => {
   const imageName = `${v4()}.${jImage.getExtension()}`;
   const imageBuffer = await jImage.getBufferAsync(Jimp.MIME_PNG);
 
-  // await uploadToStaticBucket(`invitations/${imageName}`, imageBuffer);
+  await uploadToStaticBucket(`invitations/${imageName}`, imageBuffer);
 
-  await jImage.writeAsync(imageName);
+  // await jImage.writeAsync(imageName);
 
   return `invitations/${imageName}`;
 };
@@ -147,4 +147,4 @@ const template: Omit<ITemplate, keyof RootObject> = {
 };
 
 // @ts-ignore
-imageGenerator(template).then(console.log).catch(console.error);
+// imageGenerator(template).then(console.log).catch(console.error);
