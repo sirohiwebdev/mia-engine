@@ -10,7 +10,7 @@ class HashGenerator {
     const plain = Buffer.from(base64, 'base64').toString('ascii');
     return plain;
   };
-  generateForUser = (email: string, time = 1) => {
+  generateForUser = (email: string, time = Number(process.env.HASH_TIME || 24)) => {
     const date = new Date(Date.now() + time * 3600000).getTime();
     const hash = this.toBase64(JSON.stringify({ email: email, timestamp: date }));
     return hash;
