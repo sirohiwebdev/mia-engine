@@ -16,3 +16,4 @@ log/*
 # config/
 .env*
 !.env.example
+cache

@@ -29,6 +29,8 @@ export const templateContentSchema: Joi.ObjectSchema<InvitationTemplateContent> 
     fontStyle: Joi.string(),
     color: Joi.string(),
     backgroundColor: Joi.string(),
+    textAlign: Joi.string(),
+    shadow: Joi.string(),
   }).required(),
 });
 export const templateSchema: Joi.ObjectSchema<ITemplate> = Joi.object({

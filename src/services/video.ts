@@ -1,28 +1,15 @@
-import { IInvitationTemplateData, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
+import { InvitationVideoTemplateParams, VideoTemplateContent } from '@sirohiwebdev/mia-core';
 import { FFCreator, FFScene, FFText, FFVideo } from 'ffcreator';
-import ffmpeg from 'fluent-ffmpeg';
-
-import { staticUrl } from 'configs';
-
-export interface IInvitationVideoTemplateContent extends InvitationTemplateContent {
-  start: number;
-  end: number;
-}
-export interface InvitationVideoTemplateData extends IInvitationTemplateData {
-  video: string;
-  contents: IInvitationVideoTemplateContent[];
-}
 
 class VideoMaker {
-  video: ffmpeg.FfmpegCommand;
   creator: FFCreator;
   scene: FFScene;
-  template: InvitationVideoTemplateData;
+  template: InvitationVideoTemplateParams;
 
-  constructor(data: InvitationVideoTemplateData) {
+  constructor(data: InvitationVideoTemplateParams) {
     this.template = data;
     const videoPath = `/home/sirohi/work/strivebit/mia/mia-backend/src/services/${this.template.video}`;
-    this.video = ffmpeg(videoPath);
+    // this.video = ffmpeg(videoPath);
     this.scene = new FFScene();
     this.creator = new FFCreator({
       outputDir: './output',
@@ -86,7 +73,7 @@ class VideoMaker {
     this.creator.start(); // start processing
   };
 
-  addText = (textContent: IInvitationVideoTemplateContent) => {
+  addText = (textContent: VideoTemplateContent) => {
     const text = new FFText({ text: textContent.source, x: textContent.x, y: textContent.y });
     text.setColor(textContent.properties?.color || 'black'); // text color
     // text.setBackgroundColor('#b33771'); // background color
@@ -98,7 +85,7 @@ class VideoMaker {
 
 export default VideoMaker;
 
-const template: InvitationVideoTemplateData = {
+const template: InvitationVideoTemplateParams = {
   id: '0ff1489e-8473-4d9b-a684-58f043b02d7e',
   name: 'Birthday template',
   height: 503,

@@ -1,4 +1,4 @@
-import { getContentDimensions, getImageDimensions, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
+import { getImageDimensions, InvitationTemplateContent } from '@sirohiwebdev/mia-core';
 import Jimp from 'jimp';
 import { v4 } from 'uuid';
 
@@ -9,46 +9,18 @@ import { RootObject } from 'models/_base';
 import { getImageFromText } from './font';
 import { uploadToStaticBucket } from './s3';
 
-const fontSizeMap = {
-  8: Jimp.FONT_SANS_8_BLACK,
-  10: Jimp.FONT_SANS_10_BLACK,
-  12: Jimp.FONT_SANS_12_BLACK,
-  14: Jimp.FONT_SANS_14_BLACK,
-  16: Jimp.FONT_SANS_16_BLACK,
-  32: Jimp.FONT_SANS_32_BLACK,
-  64: Jimp.FONT_SANS_64_BLACK,
-  128: Jimp.FONT_SANS_128_BLACK,
-};
-
-const getFont = (size: number) => {
-  return fontSizeMap[size] || Jimp.FONT_SANS_12_BLACK;
-};
-
 const addPrintContent = async (
   image: Jimp,
   content: InvitationTemplateContent,
   template: { width: number; height: number },
 ) => {
   const { source = '', properties, x, y } = content;
-  // const { x, y } = getContentDimensions({ template, content });
-
-  // const font = await Jimp.loadFont(getFont(properties.fontSize));
-  // const width = Jimp.measureText(font, source);
-  // const height = Jimp.measureTextHeight(font, source, template.width);
 
   const textImageUri = await getImageFromText(content);
 
   const buffer = Buffer.from(textImageUri.replace('data:image/png;base64,', ''), 'base64');
 
   const textImage = await Jimp.read(buffer);
-  // await textImage.print(font, 0, 0, source);
-
-  // if (properties && properties.color) {
-  //   console.log('Applying color', properties.color, Jimp.cssColorToHex(properties.color));
-  //   await textImage.color([{ apply: 'xor', params: [properties.color] }]);
-  // }
-
-  // await textImage.writeAsync('text.png');
   await image.blit(textImage, x, y);
 };
 
