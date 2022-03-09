@@ -17,3 +17,5 @@ log/*
 .env*
 !.env.example
 cache
+coverage
+.nyc_output
