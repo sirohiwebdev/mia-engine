@@ -8,6 +8,7 @@ export const getImageFromText = async (text: InvitationTemplateContent) => {
   const {
     fontFamily = 'Montserrat-Italic',
     fontSize = 12,
+    textAlign = 'left',
     color = 'black',
     backgroundColor = 'transparent',
   } = properties;
@@ -20,7 +21,7 @@ export const getImageFromText = async (text: InvitationTemplateContent) => {
     fontFamily,
     fontPath: `static/fonts/${fontFile}`,
     lineHeight: 1.5 * fontSize,
-    // textAlign: 'center',
+    textAlign: textAlign as any,
     verticalAlign: 'middle',
     margin: 2,
     textColor: color || 'black',
