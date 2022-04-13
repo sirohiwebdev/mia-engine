@@ -1,4 +1,5 @@
 import Mailer, { EmailOptions } from './mailer';
+import { twilioApi } from './twilio';
 
 export type NotificationType = 'sms' | 'email';
 export type SmsOptions = any;
@@ -17,8 +18,8 @@ class Notification {
     return await this.mailer.sendSimpleTextMail(to, subject, message, html);
   };
 
-  protected sms = (data: SmsOptions) => {
-    return true;
+  protected sms = (to: string, message: string) => {
+    return twilioApi.sendSMS(to, message);
   };
 }
 
@@ -33,11 +34,12 @@ class EmailNotification extends Notification {
 }
 
 class SMSNotification extends Notification {
-  send = async (data: SmsOptions) => {
-    return await this.sms(data);
+  send = async (to: string, message: string) => {
+    return await this.sms(to, message);
   };
 }
 
 const emailNotification = new EmailNotification();
+const smsNotification = new SMSNotification();
 
-export { emailNotification };
+export { emailNotification, smsNotification };

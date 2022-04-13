@@ -5,9 +5,10 @@ import { makeInvitation } from 'controllers/invitations';
 import { checkJwt } from 'middleware/checkJwt';
 import upload from 'middleware/uploader';
 import requestValidator from 'middleware/validator';
-import whatsapp from 'services/whatsapp';
 import { AuthenticatedRequest } from 'types/JwtPayload';
 import { create, list, get, saveInvitation } from 'views/invitations';
+
+import { twilioApi } from './../../services/twilio';
 
 const router = Router();
 
@@ -24,7 +25,7 @@ router.post(
   async (req: AuthenticatedRequest, res: Response) => {
     const { contacts, message, fileUrl } = req.body;
 
-    const send = contacts.map((c) => whatsapp.sendMessage(`whatsapp:${c}`, message, fileUrl));
+    const send = contacts.map((c) => twilioApi.sendWhatsappMessage(`whatsapp:${c}`, message, fileUrl));
 
     try {
       await Promise.all(send);
