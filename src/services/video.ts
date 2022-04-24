@@ -1,5 +1,5 @@
 import { InvitationVideoTemplateParams, VideoTemplateContent } from '@sirohiwebdev/mia-core';
-import { FFCreator, FFScene, FFText, FFVideo } from 'ffcreator';
+import { FFVideo, FFScene, FFImage, FFText, FFCreator } from 'ffcreatorlite';
 
 class VideoMaker {
   creator: FFCreator;
@@ -13,17 +13,14 @@ class VideoMaker {
     this.scene = new FFScene();
     this.creator = new FFCreator({
       outputDir: './output',
-      cacheDir: './cache',
-      width: data.width,
-      height: data.height,
+      // cacheDir: './cache',
+      // width: data.width,
+      // height: data.height,
       output: 'output.mp4',
     });
 
     this.creator.on('start', () => {
       console.log(`FFCreator start`);
-    });
-    this.creator.on('complete', (e) => {
-      console.log(`FFCreator completed: \n USEAGE: ${e.useage} \n PATH: ${e.output} `);
     });
 
     this.creator.on('progress', (e) => {
@@ -32,12 +29,13 @@ class VideoMaker {
     });
     const video = new FFVideo({
       path: videoPath,
-      x: 100,
-      y: 150,
-      width: 500,
-      height: 350,
+      // x: 100,
+      // y: 150,
+      // width: 500,
+      // height: 350,
     });
     video.setAudio(true); // Is there music
+    // console.log(video);
     this.scene.addChild(video);
   }
 
@@ -71,6 +69,13 @@ class VideoMaker {
     // this.video.run();
     this.creator.addChild(this.scene);
     this.creator.start(); // start processing
+    this.creator.on('complete', (e) => {
+      console.log(`FFCreator completed: \n USEAGE: ${e.useage} \n PATH: ${e.output} `);
+    });
+    this.creator.on('error', (e) => {
+      console.error(e);
+      // console.log(`FFCreator completed: \n USEAGE: ${e.useage} \n PATH: ${e.output} `);
+    });
   };
 
   addText = (textContent: VideoTemplateContent) => {
