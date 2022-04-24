@@ -1,3 +1,4 @@
+/*
 import { InvitationVideoTemplateParams, VideoTemplateContent } from '@sirohiwebdev/mia-core';
 import { FFVideo, FFScene, FFImage, FFText, FFCreator } from 'ffcreatorlite';
 
@@ -121,3 +122,4 @@ const vm = new VideoMaker(template);
 vm.addContents();
 // vm.save('output.mp4', (e) => console.log(e));
 vm.run();
+*/
