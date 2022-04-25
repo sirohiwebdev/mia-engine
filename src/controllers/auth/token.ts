@@ -6,7 +6,7 @@ import hashGenerator from 'services/hashGenerator';
 import { createJwtToken } from 'utils/createJwtToken';
 
 export const getAccessToken = async (req: Request, res: Response, next: NextFunction) => {
-  let { refresh_token } = req.query;
+  const { refresh_token } = req.query;
 
   const userModel = new User(getDb());
 
@@ -26,8 +26,8 @@ export const getAccessToken = async (req: Request, res: Response, next: NextFunc
     }
     const { role, _id, name, created_at, email, mobile } = userData;
     const access_token = createJwtToken({ email, mobile, _id: _id.toHexString(), name, created_at, role });
-    refresh_token = hashGenerator.generateForUser(email, 24);
-    return res.status(200).json({ access_token, refresh_token });
+    const rft = hashGenerator.generateForUser(email || mobile, 24);
+    return res.status(200).json({ access_token, refresh_token: rft });
   } catch (err) {
     console.error(err);
     return res.status(400).send({ error: err.message });
