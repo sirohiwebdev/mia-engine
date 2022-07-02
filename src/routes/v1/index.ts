@@ -1,5 +1,7 @@
 import { Router } from 'express';
 
+import { errorHandler } from '../../middleware';
+
 import auth from './auth';
 import invitations from './invitations';
 import payment from './payment';
@@ -17,5 +19,6 @@ router.use('/plans', plans);
 router.use('/users', users);
 router.use('/subscriptions', subscription);
 router.use('/payments', payment);
+router.use(errorHandler);
 
 export default router;

@@ -1,0 +1,55 @@
+{
+  "id": "0ff1489e-8473-4d9b-a684-58f043b02d7e",
+  "name": "Birthday template",
+  "height": 503,
+  "layout": "portrait",
+  "width": 360,
+  "contents": [
+    {
+      "id": "a648bb11-bf3c-4e79-8530-a4254f9ef1ff",
+      "label": "Message",
+      "source": "John and Sujan \n Getting married on \n 27th March, 2022",
+      "x": 553,
+      "y": 410,
+      "start": 15,
+      "end": 20,
+      "properties": {
+        "color": "black"
+      },
+      "type": "text",
+      "w": 100,
+      "h": 20
+    },
+    {
+      "id": "a648bb11-bf3c-4e79-85ffa4t54s4f9ef1ff",
+      "label": "Name",
+      "source": "John Cading",
+      "x": 453,
+      "y": 450,
+      "start": 5,
+      "end": 10,
+      "properties": {
+        "color": "black"
+      },
+      "type": "text",
+      "w": 100,
+      "h": 20
+    },
+    {
+      "id": "a648bbdffdfdsa30-a4254f9ef1ff",
+      "label": "Photo",
+      "source": "https://images.pexels.com/photos/11950172/pexels-photo-11950172.jpeg?cs=srgb&dl=pexels-dylan-spangler-11950172.jpg&fm=jpg",
+      "x": 0,
+      "y": 0,
+      "start": 15,
+      "end": 20,
+      "properties": {
+        "color": "black"
+      },
+      "type": "image",
+      "w": 180,
+      "h": 200
+    }
+  ],
+  "video": "empty-video.mp4"
+}
