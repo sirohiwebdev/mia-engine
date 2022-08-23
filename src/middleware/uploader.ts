@@ -33,7 +33,11 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/invitations');
       return;
     }
-    cb(null, 'uploads/templates');
+    if (file.fieldname === 'templates') {
+      cb(null, 'uploads/templates');
+      return;
+    }
+    cb(null, 'uploads/data');
   },
   filename: function (req, { originalname, fieldname }, cb) {
     const extIndex = originalname.lastIndexOf('.');
@@ -43,5 +47,8 @@ const storage = multer.diskStorage({
   },
 });
 
+const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: s3Storage });
+export const diskUploader = multer({ storage });
+export const uploadToMemory = multer({ storage: memoryStorage });
 export default upload;
