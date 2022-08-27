@@ -48,9 +48,8 @@ export const get = async (req: AuthenticatedRequest, res: Response, next: NextFu
 
 export const saveInvitation = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const invitationImage = req.files['invitation'][0];
-
-    return res.json({ invitation: invitationImage });
+    const invitationImage = req.files as any[];
+    return res.json(invitationImage.map((d) => ({ key: d.key, originalname: d.originalname })));
   } catch (err) {
     return next(err);
   }

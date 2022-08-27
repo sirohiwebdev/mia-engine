@@ -16,6 +16,7 @@ interface IToken extends RootObject {
   validationSession: string;
   user: string; // User Id
 }
+
 export const tokenSchema = Joi.object<IToken>({
   validUpto: Joi.string().required().isoDate(),
   token: Joi.string().required(),
@@ -34,6 +35,8 @@ export default class Token extends BaseModel<IToken> {
    * Create a token for validation against a user
    * @param user user-email
    * @param s time in seconds default to 300 seconds or 5 minutes
+   * @param length
+   * @param options
    */
   createToken = async (
     user: string,

@@ -6,45 +6,33 @@ import { staticUrl } from 'configs';
 import { ITemplate } from 'models';
 import { RootObject } from 'models/_base';
 
+import { getImageFromText } from './font';
 import { uploadToStaticBucket } from './s3';
-
-const fontSizeMap = {
-  8: Jimp.FONT_SANS_8_BLACK,
-  10: Jimp.FONT_SANS_10_BLACK,
-  12: Jimp.FONT_SANS_12_BLACK,
-  14: Jimp.FONT_SANS_14_BLACK,
-  16: Jimp.FONT_SANS_16_BLACK,
-  32: Jimp.FONT_SANS_32_BLACK,
-  64: Jimp.FONT_SANS_64_BLACK,
-  128: Jimp.FONT_SANS_128_BLACK,
-};
-
-const getFont = (size: number) => {
-  return fontSizeMap[size] || Jimp.FONT_SANS_12_BLACK;
-};
 
 const addPrintContent = async (
   image: Jimp,
   content: InvitationTemplateContent,
   template: { width: number; height: number },
 ) => {
-  const { source, properties, x, y } = content;
-  // const { x, y } = getContentDimensions({ template, content });
+  const { source = '', properties, x, y } = content;
 
-  const font = await Jimp.loadFont(getFont(properties.fontSize));
-  const width = Jimp.measureText(font, source);
-  const height = Jimp.measureTextHeight(font, source, template.width);
+  const textImageUri = await getImageFromText(content);
 
-  const textImage = new Jimp(width, height);
-  await textImage.print(font, 0, 0, source);
+  const buffer = Buffer.from(textImageUri.replace('data:image/png;base64,', ''), 'base64');
 
-  if (properties && properties.color) {
-    console.log('Applying color', properties.color, Jimp.cssColorToHex(properties.color));
-    await textImage.color([{ apply: 'xor', params: [properties.color] }]);
-  }
-
-  // await textImage.writeAsync('text.png');
+  const textImage = await Jimp.read(buffer);
   await image.blit(textImage, x, y);
+};
+
+const addImageContent = async (image: Jimp, contents: InvitationTemplateContent[]) => {
+  for (const content of contents) {
+    const { source, x, y, w, h } = content;
+    if (source) {
+      const imageUpper = await Jimp.read(`${staticUrl}/${source}`);
+      await imageUpper.resize(w, h);
+      await image.blit(imageUpper, x, y);
+    }
+  }
 };
 
 export const imageGenerator = async (template: ITemplate) => {
@@ -56,6 +44,9 @@ export const imageGenerator = async (template: ITemplate) => {
   const jImage = await Jimp.read(imageInputPath);
 
   const textContents = contents.filter((c) => c.type === 'text');
+  const imageContents = contents.filter((c) => c.type === 'image');
+
+  await addImageContent(jImage, imageContents);
 
   for (const c of textContents) {
     await addPrintContent(jImage, c, { ...template });
@@ -83,28 +74,28 @@ const template: Omit<ITemplate, keyof RootObject> = {
     {
       id: 'a648bb11-bf3c-4e79-8530-a4254f9ef1ff',
       label: 'Message',
-      source: 'Hello there My Friends, This should fill the entire width ot the image and should also be cropped.',
+      source: 'Hello there My Friends',
       x: 13,
       y: 410,
       properties: {
-        color: 'pink',
+        color: 'black',
       },
       type: 'text',
-      w: 100,
+      w: 200,
       h: 20,
     },
     {
       id: '95b13cd8-003f-4106-b1a2-48e7cc52dcee',
       label: 'Timing',
-      source: '19th Frb, 2022',
+      source: '19th Feb, 2022',
       x: 14,
       y: 437,
       properties: {
         color: 'green',
-        fontSize: 32,
+        fontSize: 14,
       },
       type: 'text',
-      w: 100,
+      w: 200,
       h: 20,
     },
     {

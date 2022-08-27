@@ -4,24 +4,30 @@ import { Db } from 'mongodb';
 import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
-export enum PaymentStatus {
-  PENDING = 'pending',
-  SUCCESS = 'success',
+export enum PaymentState {
+  CREATED = 'created',
+  AUTHORIZED = 'authorized',
+  CAPTURED = 'captured',
+  REFUNDED = 'refunded',
   FAILED = 'failed',
 }
 
 export interface IPayment extends RootObject {
   user: string;
   amount: number;
+  plan: string;
   subscription: string;
-  status: PaymentStatus;
+  status: PaymentState;
+  razorpayId: string | null;
 }
 
 export const paymentSchema: Joi.Schema<IPayment> = Joi.object<IPayment>({
   amount: Joi.number().required().min(0),
   user: Joi.string().required(),
+  plan: Joi.string().required(),
   subscription: Joi.string().required(),
-  status: Joi.string().valid(...Object.values(PaymentStatus)),
+  status: Joi.string().valid(...Object.values(PaymentState)),
+  razorpayId: Joi.string().default(null),
 }).required();
 
 export default class Payment extends BaseModel<IPayment> {

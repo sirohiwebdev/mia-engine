@@ -4,12 +4,12 @@ import Email from 'email-templates';
 import nodemailer, { Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import { fromEmail, smtpPassword, smtpUsername } from '../configs/constants';
+import { fromEmail, smtpHost, smtpPassword, smtpPort, smtpUsername } from '../configs';
 
 /**
  * Types of email template we currently have to send emails
  *
- * If we wish to modify templates or add new here please changes this type according
+ * If we wish to modify templates or add new here please change this type according
  *
  * Each value in the type corresponds to the name of the folder of a template
  *
@@ -46,10 +46,8 @@ export default class Mailer {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      // host: smtpHost,
-      service: 'Gmail',
-      secure: true,
-      // port: 465,
+      host: smtpHost,
+      port: Number(smtpPort),
       auth: {
         user: smtpUsername,
         pass: smtpPassword,
@@ -95,11 +93,5 @@ export default class Mailer {
   };
 }
 
-//
-// const mailer = new Mailer()
-// mailer.sendMail({
-//     data: {shop: "Raja Tailor Shop"},
-//     template: "shop-created",
-//     to: 'sellers@storely.live'
-// }).then(console.log).catch(console.log);
-//
+// const mailer = new Mailer();
+// mailer.sendSimpleTextMail('sirohiwebdev@gmail.com', 'Hi', "Hi Abhishek What's up").then(console.log).catch(console.log);

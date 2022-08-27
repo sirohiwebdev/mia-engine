@@ -5,15 +5,19 @@ import BaseModel, { RootObject } from './_base';
 import Collections from './_collections';
 
 export interface ISubscription extends RootObject {
-  subscriptionDate: string;
   plan: string;
   user: string;
+  subscriptionDate: string | null;
+  renewalDate: string;
+  active: boolean;
 }
 
 export const subscriptionSchema: Joi.Schema<ISubscription> = Joi.object<ISubscription>({
   plan: Joi.string().required(),
   subscriptionDate: Joi.string().required().isoDate(),
-  user: Joi.string().required(),
+  renewalDate: Joi.string().allow(null).isoDate(),
+  user: Joi.string(),
+  active: Joi.boolean().required().default(false),
 });
 
 export default class Subscription extends BaseModel<ISubscription> {

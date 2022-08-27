@@ -18,6 +18,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/ban-ts-comment': 0,
     '@typescript-eslint/no-empty-interface': 0,
+    '@typescript-eslint/prefer-namespace-keyword': 0,
 
     // Import
     'import/order': [

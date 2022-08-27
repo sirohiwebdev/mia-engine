@@ -34,7 +34,8 @@ export default class BaseModel<T extends RootObject> {
   }
 
   get = async (id: string) => {
-    return this.dbCollection.findOne({});
+    // @ts-ignore
+    return this.dbCollection.findOne({ _id: new ObjectId(id) }) as Promise<WithId<T> | null>;
   };
 
   getMany = (query: Filter<T> = {}, limit = 100, offset = 0): Promise<WithId<T>[]> => {

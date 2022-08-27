@@ -10,6 +10,7 @@ const s3Storage = multerS3({
   s3: s3,
   bucket: process.env.S3_STORAGE_BUCKET,
   metadata: function (req, file, cb) {
+    console.log(file);
     cb(null, { fieldName: file.fieldname });
   },
   key: function (req, { originalname, fieldname }, cb) {
