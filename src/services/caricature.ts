@@ -1,7 +1,8 @@
 import fs from 'fs';
+import * as util from 'util';
 
 import axios from 'axios';
-import FormData from 'form-data';
+import request from 'request';
 
 interface ConvertToCaricatureRequest {
   script_key: string;
@@ -27,18 +28,25 @@ export class Caricature {
   private sendRequestForCaricature = async (image: Express.Multer.File) => {
     const url = new URL(this.caricatureApiHost);
     url.pathname = 'api/post-image';
-    const formData = new FormData();
-    console.log('Path to image --', image.path);
-    console.log(fs.existsSync(image.path));
-    formData.append('photo', fs.createReadStream(image.path));
-    const { data } = await axios.post(url.toString(), formData, {
-      timeout: 60000,
-      headers: {
-        ...formData.getHeaders(),
-      },
-    });
 
-    return data as ConvertToCaricatureRequest;
+    const options = {
+      method: 'POST',
+      url: url.toString(),
+      headers: {},
+      timeout: 60000,
+      formData: {
+        photo: {
+          value: fs.createReadStream(image.path),
+          options: {
+            filename: image.filename,
+            contentType: image.mimetype,
+          },
+        },
+      },
+    };
+
+    const req = await util.promisify(request)(options);
+    return JSON.parse(req.body) as ConvertToCaricatureRequest;
   };
 
   private getImagePathFromKey = async (key: string) => {
@@ -51,8 +59,8 @@ export class Caricature {
 
   generateCaricature = async (image: Express.Multer.File) => {
     const { script_key } = await this.sendRequestForCaricature(image);
+    console.log('Script Key', script_key);
     const imagePath = await this.getImagePathFromKey(script_key);
-
     const imageUrl = new URL(this.caricatureApiHost);
     imageUrl.pathname = imagePath;
 

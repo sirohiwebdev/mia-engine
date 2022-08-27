@@ -13,7 +13,7 @@ export const generate = async (req: Request, res: Response, next: NextFunction) 
 
     return res.json({ imagePath: data });
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     return res.status(500).json({
       message: String(e),
     });

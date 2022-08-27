@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import fs from 'fs';
 import path from 'path';
 
 import bodyParser from 'body-parser';
@@ -12,6 +11,13 @@ import { initDB } from 'database/connect';
 
 import { errorHandler } from './middleware';
 import routes from './routes';
+import { createAllDirectories } from './utils/create-dirs';
+
+/**
+ * Creat all required directories for the application
+ */
+createAllDirectories();
+
 export const app = express();
 app.use(cors());
 app.use(helmet());
