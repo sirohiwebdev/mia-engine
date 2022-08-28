@@ -4,6 +4,7 @@ import * as util from 'util';
 import axios from 'axios';
 import request from 'request';
 
+const caricatureProxy = 'https://api.myinvitationapp.com/caricature';
 interface ConvertToCaricatureRequest {
   script_key: string;
   message: string;
@@ -24,7 +25,6 @@ interface ImageDetailsResponse {
 
 export class Caricature {
   caricatureApiHost = process.env.CARICATURE_API_HOST as string;
-
   private sendRequestForCaricature = async (image: Express.Multer.File) => {
     const url = new URL(this.caricatureApiHost);
     url.pathname = 'api/post-image';
@@ -61,9 +61,6 @@ export class Caricature {
     const { script_key } = await this.sendRequestForCaricature(image);
     console.log('Script Key', script_key);
     const imagePath = await this.getImagePathFromKey(script_key);
-    const imageUrl = new URL(this.caricatureApiHost);
-    imageUrl.pathname = imagePath;
-
-    return imageUrl.toString();
+    return `${caricatureProxy}${imagePath}`;
   };
 }
